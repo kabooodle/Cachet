@@ -13,7 +13,7 @@
 <div class="content-wrapper">
     <div class="row">
         <div class="col-md-12">
-            @include('dashboard.partials.errors')
+            @include('partials.errors')
             <form class="form-vertical" name="MetricsForm" role="form" method="POST">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <fieldset>
@@ -57,7 +57,11 @@
                     </div>
                     <div class="form-group">
                         <label for="metric-places">{{ trans('forms.metrics.threshold') }}</label>
-                        <input type="number" min="0" max="100" class="form-control" name="threshold" id="metric-threshold" required value="{{ $metric->threshold }}" placeholder="{{ trans('forms.metrics.threshold') }}">
+                        <select name="threshold" class="form-control" required>
+                            @foreach ($acceptableThresholds as $threshold)
+                            <option {{ (int) Binput::old('metric.threshold') === $threshold || $metric->threshold === $threshold ? 'selected' : null }}>{{ $threshold }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="checkbox">
                         <label>
@@ -65,6 +69,14 @@
                             <input type="checkbox" value="1" name="display_chart" {{ $metric->display_chart ? 'checked' : null }}>
                             {{ trans('forms.metrics.display-chart') }}
                         </label>
+                    </div>
+                    <div class="form-group">
+                        <label>{{ trans('forms.metrics.visibility') }}</label>
+                        <select name="visible" class="form-control" required>
+                            <option value="0" {{ $metric->visible === 0 ? 'selected' : null }}>{{ trans('forms.metrics.visibility_authenticated') }}</option>
+                            <option value="1" {{ $metric->visible === 1 ? 'selected' : null }}>{{ trans('forms.metrics.visibility_public') }}</option>
+                            <option value="2" {{ $metric->visible === 2 ? 'selected' : null }}>{{ trans('forms.metrics.visibility_hidden') }}</option>
+                        </select>
                     </div>
                 </fieldset>
 
